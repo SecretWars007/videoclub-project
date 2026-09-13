@@ -1,0 +1,36 @@
+# Git
+.git
+.gitignore
+
+# Entornos virtuales, dependencias y variables de entorno
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+env/
+
+# Python cache y compilados
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Tests y tipado
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Carpetas de otros servicios (para aligerar el contexto de build si se ejecuta desde la raíz)
+frontend/
+docs/
+database/
