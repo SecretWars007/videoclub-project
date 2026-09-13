@@ -1,0 +1,92 @@
+version: '3.8' 
+
+services:
+  # Balanceador de Carga para Alta Disponibilidad (HA)
+  haproxy:
+    image: haproxy:2.8-alpine
+    container_name: videoclub-haproxy
+    ports:
+      - "9200:9200" # Endpoint único unificado de OpenSearch
+      - "8404:8404" # Panel de Estadísticas HAProxy
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    networks:
+      - videoclub-network
+    depends_on:
+      - opensearch-node1
+      - opensearch-node2
+
+  # Nodo 1 del Clúster OpenSearch (Líder / Primario)
+  opensearch-node1:
+    image: opensearchproject/opensearch:2.11.1
+    container_name: opensearch-node1
+    env_file:
+      - .env
+    environment:
+      - cluster.name=${CLUSTER_NAME}
+      - node.name=opensearch-node1
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2
+      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2
+      - DISABLE_SECURITY_PLUGIN=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - opensearch-data1:/usr/share/opensearch/data
+    networks:
+      - videoclub-network
+
+  # Nodo 2 del Clúster OpenSearch (Réplica y Failover)
+  opensearch-node2:
+    image: opensearchproject/opensearch:2.11.1
+    container_name: opensearch-node2
+    env_file:
+      - .env
+    environment:
+      - cluster.name=${CLUSTER_NAME}
+      - node.name=opensearch-node2
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2
+      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2
+      - DISABLE_SECURITY_PLUGIN=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - opensearch-data2:/usr/share/opensearch/data
+    networks:
+      - videoclub-network
+
+  # Dashboard Web para Administración NoSQL
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.11.1
+    container_name: videoclub-dashboards
+    ports:
+      - "5601:5601"
+    environment:
+      - OPENSEARCH_HOSTS=["http://haproxy:9200"]
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    networks:
+      - videoclub-network
+    depends_on:
+      - haproxy
+
+  # Servidor Backend: FastAPI Python
+  backend:
+    build:
+      context: ..
+      dockerfile: containers/backend.Dockerfile
+    container_name: videoclub-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ../backend:/app # Hot-Reload en tiempo real
+    networks:
+      - videoclub-network
+    depends_on:
+      - haproxy
+
+networks:
+  videoclub-network:
+    driver: bridge
+
+volumes:
+  opensearch-data1:
+  opensearch-data2:
