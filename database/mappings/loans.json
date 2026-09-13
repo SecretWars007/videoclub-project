@@ -1,0 +1,28 @@
+{
+  "settings": { "number_of_shards": 2, "number_of_replicas": 1 },
+  "mappings": {
+    "properties": {
+      "loan_id": { "type": "keyword" },
+      "client_id": { "type": "keyword" },
+      "client_name": { "type": "keyword" },
+      "client_ci_nit": { "type": "keyword" },
+      "items": {
+        "type": "nested",
+        "properties": {
+          "copy_id": { "type": "keyword" },
+          "video_id": { "type": "keyword" },
+          "video_title": { "type": "keyword" },
+          "daily_rate_bs": { "type": "double" }
+        }
+      },
+      "rental_days": { "type": "integer" },
+      "loan_date": { "type": "date" },
+      "expected_return_date": { "type": "date" },
+      "subtotal_bs": { "type": "double" },
+      "discount_percentage": { "type": "double" },
+      "discount_amount_bs": { "type": "double" },
+      "total_bs": { "type": "double" },
+      "status": { "type": "keyword" }
+    }
+  }
+}

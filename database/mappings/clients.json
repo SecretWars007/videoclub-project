@@ -1,0 +1,25 @@
+{
+  "settings": { "number_of_shards": 2, "number_of_replicas": 1 },
+  "mappings": {
+    "properties": {
+      "client_id": { "type": "keyword" },
+      "full_name": {
+        "type": "text",
+        "fields": { "keyword": { "type": "keyword" } }
+      },
+      "ci_nit": { "type": "keyword" },
+      "phone": { "type": "keyword" },
+      "email": { "type": "keyword" },
+      "location": { "type": "geo_point" },
+      "address_description": { "type": "text" },
+      "is_blocked": { "type": "boolean" },
+      "block_info": {
+        "properties": {
+          "blocked_at": { "type": "date" },
+          "reason": { "type": "text" }
+        }
+      },
+      "registered_at": { "type": "date" }
+    }
+  }
+}

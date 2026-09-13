@@ -78,6 +78,7 @@ services:
       - .env
     volumes:
       - ../backend:/app # Hot-Reload en tiempo real
+      - ../database:/database
     networks:
       - videoclub-network
     depends_on:

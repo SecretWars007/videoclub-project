@@ -1,0 +1,24 @@
+{
+  "settings": { "number_of_shards": 1, "number_of_replicas": 1 },
+  "mappings": {
+    "properties": {
+      "config_id": { "type": "keyword" },
+      "daily_rates_bs": {
+        "properties": {
+          "day_1": { "type": "double" },
+          "day_2": { "type": "double" },
+          "day_3": { "type": "double" },
+          "day_4": { "type": "double" },
+          "day_5": { "type": "double" }
+        }
+      },
+      "quantity_discounts": {
+        "properties": {
+          "tier_3_to_5_percent": { "type": "double" },
+          "tier_above_5_percent": { "type": "double" }
+        }
+      },
+      "updated_at": { "type": "date" }
+    }
+  }
+}
