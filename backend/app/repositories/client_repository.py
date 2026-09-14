@@ -25,7 +25,7 @@ class ClientRepository(BaseRepository):
         # Extracción de resultados
         results = [] 
         for hit in response["hits"]["hits"]: 
-            doc = hit["\_source"] 
-            doc["client_id"] = hit["\_id"] 
+            doc = hit["_source"] 
+            doc["client_id"] = hit["_id"] 
             results.append(doc) 
         return results
